@@ -9,6 +9,9 @@ export interface Project {
   id: string;
   title: string;
   description: string;
+  problem?: string;
+  solution?: string;
+  category: string;
   tech_stack: string[];
   image_url?: string;
   live_url?: string;
@@ -40,7 +43,20 @@ export default function ProjectCard({ project }: { project: Project }) {
       
       <div className={styles.cardContent}>
         <h3 className={styles.title}>{project.title}</h3>
-        <p className={styles.description}>{project.description}</p>
+        {project.description && <p className={styles.description}>{project.description}</p>}
+        
+        <div className={styles.problemSolution}>
+          {project.problem && (
+            <p className={styles.problemText}>
+              <strong>Problem:</strong> {project.problem}
+            </p>
+          )}
+          {project.solution && (
+            <p className={styles.solutionText}>
+              <strong>Solution:</strong> {project.solution}
+            </p>
+          )}
+        </div>
         
         <div className={styles.techStack}>
           {project.tech_stack?.map((tech) => (

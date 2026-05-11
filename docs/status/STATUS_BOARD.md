@@ -1,34 +1,39 @@
 # 📊 Project Status Board
 
-**Last Updated:** 2026-05-11 by Planner
+**Last Updated:** 2026-05-12 by Planner
 
 ## Overall Progress
 | Milestone | Status |
 |:---|:---|
-| M1: Foundation | ✅ Complete |
-| M2: Components | ✅ Complete |
-| M3: Assembly | 🔄 In Progress |
-| M4: Deploy | ⏳ Not Started |
+| M1: Foundation (Supabase, Next.js) | ✅ Complete |
+| M2: Components (Navbar, Hero, About, Projects, Footer) | ✅ Complete |
+| M3: Portfolio Redesign (Identity Overhaul) | 🔄 In Progress |
+| M4: Deploy (Vercel + Tagging) | ⏳ Not Started |
+
+## Current Sprint: M3 — Portfolio Identity Overhaul
+
+### Backend — ✅ COMPLETE
+All schema updates and re-seeding done. `problem` and `solution` columns added. 6 real projects seeded.
+
+### Frontend — 🔄 IN PROGRESS (Phase 1 + Phase 2 both unlocked)
+- Phase 1: Hero, Timeline, Competencies, Footer
+- Phase 2: Project cards with Problem/Solution format
+- **Decisions locked:** CV button → placeholder `#`, Icons → raw SVGs
+
+### DevOps — 💤 IDLE (Awaiting Frontend completion)
 
 ## Agent Status
 | Agent | Current Task | Branch | Status |
 |:---|:---|:---|:---|
-| 🔧 Backend | Waiting for assignments | `dev` | 💤 Idle |
-| 🎨 Frontend | UI Polish (Thumbnails, Socials, Icons) | `feature/frontend-ui-polish` | 🔄 Active |
-| ⚙️ DevOps | Waiting for deployment readiness | `dev` | 💤 Idle |
-| 📋 Planner | Workflow Upgrade Implementation | `dev` | 🔄 Active |
+| 🔧 Backend | Done | `feature/backend-schema-update` | ✅ Complete |
+| 🎨 Frontend | Identity overhaul (Phase 1 + 2) | `feature/frontend-identity-overhaul` | 🔄 Active |
+| ⚙️ DevOps | Awaiting M3 | `dev` | 💤 Idle |
+| 📋 Planner | Coordinating M3 | `dev` | 🔄 Active |
 
 ## Active Issues
-Check `docs/issues/ISSUES.md` for details.
-| ID | Severity | Summary | Assigned To |
-|:---|:---|:---|:---|
-| ISS-001 | 🔴 High | Project thumbnails missing (No Image) | Frontend |
-| ISS-002 | 🔴 High | Footer social links are generic | Frontend |
-| ISS-003 | 🟡 Medium | Footer using wrong Lucide icons | Frontend |
-| ISS-004 | 🟢 Low | Leftover page.module.css exists | Frontend |
+See `docs/issues/ISSUES.md`
 
-## Git Branch Status
-| Branch | Status |
-|:---|:---|
-| `main` | Stable (Initial Portfolio Build) |
-| `dev` | Integration Branch (Active) |
+## Required Reading for ALL Agents
+- `docs/knowledge/owner-profile.md` — WHO you are building for
+- `docs/knowledge/api-contracts.md` — Data schemas (UPDATED)
+- `.github/CONTRIBUTING.md` — Git rules
