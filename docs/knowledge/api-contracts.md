@@ -10,6 +10,8 @@ Fetched directly via Supabase client by Frontend (`Projects.tsx`).
 | `id` | `uuid` | Primary Key |
 | `title` | `text` | Project name |
 | `description` | `text` | Short summary |
+| `problem` | `text` (nullable) | The problem the project solves |
+| `solution` | `text` (nullable) | How the project solves the problem |
 | `tech_stack` | `text[]` | Array of strings (e.g., `["React", "Next.js"]`) |
 | `category` | `text` | Filter category (e.g., `embedded`, `web`) |
 | `image_url` | `text` (nullable) | Path to image (e.g., `/images/isrc.png`) |
