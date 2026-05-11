@@ -29,18 +29,21 @@ export default function Hero() {
         animate="visible"
       >
         <motion.h1 className={styles.title} variants={itemVariants}>
-          Hi, I&apos;m <span className={styles.gradientText}>Ranian</span>
+          Computer Engineer & <br />
+          <span className={styles.gradientText}>AI Automation Developer</span>
         </motion.h1>
         
         <motion.p className={styles.subtitle} variants={itemVariants}>
-          Full-Stack Developer & Embedded Systems Engineer. 
-          Building seamless bridges between hardware and beautiful interfaces.
+          Building Solutions. Automating Processes. Connecting Things.
         </motion.p>
         
         <motion.div className={styles.ctaContainer} variants={itemVariants}>
           <Link href="#projects" className={styles.btnPrimary} id="hero-btn-projects">
             View Projects
           </Link>
+          <a href="#" className={styles.btnSecondary} id="hero-btn-cv" target="_blank" rel="noopener noreferrer">
+            Download CV
+          </a>
           <Link href="#contact" className={styles.btnSecondary} id="hero-btn-contact">
             Contact Me
           </Link>

@@ -7,8 +7,33 @@
 .heading {
   font-size: 2.5rem;
   font-weight: 700;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   text-align: center;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.filterBtn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 0.5rem 1.5rem;
+  border-radius: 99px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.filterBtn:hover, .filterBtn.active {
+  background: rgba(6, 182, 212, 0.1);
+  color: var(--accent-cyan);
+  border-color: rgba(6, 182, 212, 0.3);
 }
 
 .grid {
@@ -78,8 +103,29 @@
 .description {
   color: var(--text-secondary);
   font-size: 0.95rem;
+  margin-bottom: 1rem;
+}
+
+.problemSolution {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
   flex-grow: 1;
+}
+
+.problemText, .solutionText {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.problemText strong {
+  color: #ef4444; /* red for problem */
+}
+
+.solutionText strong {
+  color: #10b981; /* green for solution */
 }
 
 .techStack {
