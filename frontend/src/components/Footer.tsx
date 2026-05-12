@@ -103,9 +103,15 @@ export default function Footer() {
           {footerText}
         </p>
         
-        <p className={styles.tech}>
-          Built with Next.js + Supabase
-        </p>
+        <div className={styles.techContainer} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', opacity: 0.7 }}>
+          <p className={styles.tech} style={{ opacity: 1, margin: 0 }}>
+            Built with Next.js + Supabase
+          </p>
+          <span>•</span>
+          <a href="/admin/login" className={styles.adminLink} style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textDecoration: 'none' }} onMouseEnter={(e) => e.currentTarget.style.color = 'var(--accent-cyan)'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}>
+            Admin CMS
+          </a>
+        </div>
       </div>
     </footer>
   );
