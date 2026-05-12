@@ -48,6 +48,9 @@ export default function Navbar() {
           <Link href="#about" onClick={closeMobileMenu}>About</Link>
           <Link href="#projects" onClick={closeMobileMenu}>Projects</Link>
           <Link href="#contact" onClick={closeMobileMenu}>Contact</Link>
+          <Link href="/admin/login" onClick={closeMobileMenu} className={styles.adminLink}>
+            Admin CMS
+          </Link>
         </div>
 
         <button className={styles.mobileMenuBtn} onClick={toggleMobileMenu} aria-label="Toggle menu" id="mobile-menu-btn">

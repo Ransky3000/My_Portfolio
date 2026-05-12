@@ -53,6 +53,19 @@
   text-shadow: var(--shadow-glow);
 }
 
+.adminLink {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.8rem;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.85rem;
+}
+
+.adminLink:hover {
+  border-color: rgba(6, 182, 212, 0.4);
+  background: rgba(6, 182, 212, 0.1);
+}
+
 .mobileMenuBtn {
   display: none;
   background: none;

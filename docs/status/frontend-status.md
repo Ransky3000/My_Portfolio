@@ -17,6 +17,10 @@
 - [x] Footer fetches `social_links` (ordered, visible-only) with icon rendering by `icon_name`
 - [x] Footer text reads from `site_settings.footer_text`
 
+### Feature Request: Public Admin Login Link
+- **Issue:** The Director wants recruiters/visitors to know there is a custom CMS powering this portfolio to showcase full-stack skills.
+- **Fix Required:** Add a subtle "Admin" or "CMS Login" link to the **top Navbar** (`Navbar.tsx`). Make it look professional but easily discoverable alongside the other navigation links (About, Projects, Contact).
+
 ### Phase 2 — Admin Panel
 - [x] `/admin/login` — Email/password auth via Supabase
 - [x] `/admin` — Protected dashboard with stats
