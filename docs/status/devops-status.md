@@ -1,17 +1,32 @@
 # DevOps Agent — Status
 
-**Role:** Vercel deployment, CI/CD, Git Tagging, Environment Variables.
-**Last Updated:** 2026-05-11
+**Role:** Deployment, CI/CD pipelines, Infrastructure, Release Tagging.
+**Last Updated:** 2026-05-12
 
 ## Current State
-**Status:** 💤 Idle
-**Current Branch:** `dev`
+**Status:** 🔄 Active (M5a Release)
+**Target Branch:** `main`
 
-## Current Tasks
-- [ ] Connect repository to Vercel
-- [ ] Configure `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in Vercel
-- [ ] Enable Vercel Analytics
-- [ ] Create initial `v0.1.0` Git tag on `main` branch
+## M5a Deployment Tasks (v0.3.0)
 
-## Active Blockers / Issues
-- Awaiting UI polish completion before initial Vercel deployment.
+The M5a Sprint (Admin Panel MVP) is complete. Both Backend and Frontend tasks are finished and fully QA tested by the Director. It is time to ship.
+
+**1. Merge to Production**
+- [ ] Ensure you are on the `main` branch
+- [ ] Merge `feature/frontend-admin` into `main`
+- [ ] Push `main` to origin (This will trigger the Vercel auto-deployment)
+
+**2. Version Tagging**
+- [ ] Create an annotated git tag: `v0.3.0` with message "Release v0.3.0: Dynamic CMS & Admin Panel MVP"
+- [ ] Push the tag to origin: `git push origin v0.3.0`
+
+**3. Verification**
+- [ ] Monitor the Vercel deployment (usually takes ~1 minute)
+- [ ] Verify the live URL `https://ranianrulona.vercel.app` is responding and the "Admin" button is visible in the Navbar.
+
+**4. Cleanup**
+- [ ] Delete the local and remote `feature/backend-admin` and `feature/frontend-admin` branches
+- [ ] Set your status to Idle.
+
+## Required Reading
+- `.github/CONTRIBUTING.md` — Git branch & tagging rules

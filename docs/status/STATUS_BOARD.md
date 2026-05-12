@@ -7,28 +7,30 @@
 |:---|:---|
 | M1: Foundation (Supabase, Next.js) | ✅ Complete |
 | M2: Components (Navbar, Hero, About, Projects, Footer) | ✅ Complete |
-| M3: Portfolio Redesign (Identity Overhaul) | 🔄 In Progress |
-| M4: Deploy (Vercel + Tagging) | ⏳ Not Started |
+| M3: Portfolio Redesign (Identity Overhaul) | ✅ Complete |
+| M4: Deploy (Vercel + Tagging) | ✅ Complete |
+| **M5a: Admin Panel MVP** | ✅ Complete |
+| M5b: Rich Project Experience | 📋 Planned |
+| M6: Dynamic Sections CMS | 📋 Planned |
 
-## Current Sprint: M3 — Portfolio Identity Overhaul
+## 🎉 DEPLOYED
+- **Live URL:** https://ranianrulona.vercel.app
+- **GitHub:** https://github.com/Ransky3000/My_Portfolio
+- **Current Release:** `v0.2.0` *(Deploying v0.3.0)*
 
-### Backend — ✅ COMPLETE
-All schema updates and re-seeding done. `problem` and `solution` columns added. 6 real projects seeded.
+## Current Sprint: M5a — Admin Panel MVP
 
-### Frontend — 🔄 IN PROGRESS (Phase 1 + Phase 2 both unlocked)
-- Phase 1: Hero, Timeline, Competencies, Footer
-- Phase 2: Project cards with Problem/Solution format
-- **Decisions locked:** CV button → placeholder `#`, Icons → raw SVGs
-
-### DevOps — 💤 IDLE (Awaiting Frontend completion)
+### Status: Awaiting DevOps Merge
+Backend and Frontend tasks are 100% complete and passed QA.
 
 ## Agent Status
 | Agent | Current Task | Branch | Status |
 |:---|:---|:---|:---|
-| 🔧 Backend | Done | `feature/backend-schema-update` | ✅ Complete |
-| 🎨 Frontend | Identity overhaul (Phase 1 + 2) | `feature/frontend-identity-overhaul` | 🔄 Active |
-| ⚙️ DevOps | Awaiting M3 | `dev` | 💤 Idle |
-| 📋 Planner | Coordinating M3 | `dev` | 🔄 Active |
+| 🔧 Backend | M5a Complete | — | 💤 Idle |
+| 🎨 Frontend | M5a Complete | — | 💤 Idle |
+| ⚙️ DevOps | Merge + tag `v0.3.0` | `main` | 🔄 Active |
+| 🔬 Researcher | Standby | — | 💤 Idle |
+| 📋 Planner | Final Review | — | 🔄 Active |
 
 ## Active Issues
 See `docs/issues/ISSUES.md`
