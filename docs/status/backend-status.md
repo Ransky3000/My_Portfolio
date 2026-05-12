@@ -5,31 +5,45 @@
 
 ## Current State
 **Status:** 💤 Idle
-**Git Branch:** `feature/backend-schema-update`
+**Git Branch:** `feature/backend-admin`
 **Supabase Project ID:** `hhmtviclhwwffoyktdgf`
 
-## ⚠️ IMPORTANT: Supabase Branching NOT Required
-**DO NOT create a Supabase branch.** Apply all migrations and seed data DIRECTLY to the main Supabase project (`hhmtviclhwwffoyktdgf`). We are still in development — there is no production data to protect. Use a **Git feature branch** only for code file changes.
+## QA Feedback / Bugs (Assigned to Backend)
 
-## M3 Tasks
-- [x] Create Git branch: `git checkout -b feature/backend-schema-update dev`
-- [x] Apply migration to add `problem` (TEXT) and `solution` (TEXT) columns to `projects` table (the `category` column already exists)
-- [x] Delete all existing placeholder data from `projects` table
-- [x] Re-seed with 6 real projects from `docs/knowledge/owner-profile.md`
-- [x] Update `backend/supabase/seed.sql` with new seed data
-- [x] Update `docs/knowledge/api-contracts.md` with new schema
-- [x] Update this status file to "Idle" when done
-- [x] Commit with message: `feat: add problem/solution columns and re-seed projects`
+**Bug 1 (CRITICAL): Authenticated users cannot SELECT from `projects` table.**
+- **Status:** ✅ FIXED
+- **Fix Applied:** Added `projects_auth_select` policy for authenticated SELECT.
+- **Audit Result:** All other tables (`site_settings`, `social_links`, `contact_submissions`) already had correct SELECT policies for their intended roles. No additional fixes needed.
 
-## Required Reading Before Starting
-1. `docs/knowledge/owner-profile.md` — Contains all 6 projects with Problem/Solution text
-2. `.github/CONTRIBUTING.md` — Git workflow rules
+## Completed Work (M5a)
 
-## Previously Completed
-- [x] Initialized Supabase project and database schema
-- [x] Implemented Row Level Security (RLS)
-- [x] Seeded `projects` database (placeholder data)
-- [x] Created `/api/contact` route handler with Zod validation
+### Task 1: Database Schema
+- [x] Create `site_settings` table
+- [x] Create `social_links` table
+
+### Task 2: Supabase Auth Setup
+- [x] Email/Password auth provider enabled
+- [x] Owner account created via dashboard
+- [x] Documented in `docs/knowledge/api-contracts.md`
+
+### Task 3: Supabase Storage Setup
+- [x] Created public storage bucket `portfolio-images`
+- [x] Set storage policies
+- [x] Documented
+
+### Task 4: Row Level Security (RLS)
+- [x] `site_settings`: public SELECT, authenticated INSERT/UPDATE/DELETE
+- [x] `social_links`: public SELECT, authenticated INSERT/UPDATE/DELETE
+- [x] `projects`: public SELECT + authenticated SELECT/INSERT/UPDATE/DELETE ✅ FIXED
+- [x] `contact_submissions`: public INSERT, authenticated SELECT/UPDATE/DELETE
+
+### Task 5: Seed Data
+- [x] Seeded `site_settings`
+- [x] Seeded `social_links`
+- [x] Updated `backend/supabase/seed.sql`
+
+### Task 6: Documentation
+- [x] Updated `docs/knowledge/api-contracts.md`
 
 ## Active Blockers
-- None. Cleared to proceed.
+- None. Fix is straightforward.
