@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import styles from '../styles/navbar.module.css';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [siteTitle, setSiteTitle] = useState('Ranian');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +19,21 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    async function fetchSiteTitle() {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('site_title')
+        .limit(1)
+        .single();
+        
+      if (!error && data?.site_title) {
+        setSiteTitle(data.site_title);
+      }
+    }
+    fetchSiteTitle();
+  }, []);
+
   const toggleMobileMenu = () => setMobileOpen(!mobileOpen);
   const closeMobileMenu = () => setMobileOpen(false);
 
@@ -24,7 +41,7 @@ export default function Navbar() {
     <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`} id="navbar">
       <div className={styles.container}>
         <Link href="/" className={styles.logo}>
-          Ranian
+          {siteTitle}
         </Link>
 
         <div className={`${styles.navLinks} ${mobileOpen ? styles.mobileOpen : ''}`}>

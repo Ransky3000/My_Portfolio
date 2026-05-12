@@ -23,6 +23,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (pathname === '/admin/login') {
+      setLoading(false);
+      return;
+    }
+
     async function checkAuth() {
       const { data: { session } } = await supabaseBrowser.auth.getSession();
       if (!session) {
@@ -35,6 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     checkAuth();
 
     const { data: { subscription } } = supabaseBrowser.auth.onAuthStateChange((_event, session) => {
+      if (pathname === '/admin/login') return;
       if (!session) {
         router.replace('/admin/login');
       } else {
@@ -43,7 +49,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     });
 
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, [router, pathname]);
 
   async function handleLogout() {
     await supabaseBrowser.auth.signOut();
@@ -56,6 +62,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="animate-spin" style={{ width: 32, height: 32, border: '3px solid var(--text-muted)', borderTopColor: 'var(--accent-cyan)', borderRadius: '50%' }} />
       </div>
     );
+  }
+
+  if (pathname === '/admin/login') {
+    return <main className={styles.loginShell}>{children}</main>;
   }
 
   return (

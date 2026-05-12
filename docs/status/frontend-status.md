@@ -4,42 +4,32 @@
 **Last Updated:** 2026-05-12
 
 ## Current State
-**Status:** 💤 Idle (M3 Sprint Complete)
-**Current Branch:** `feature/frontend-identity-overhaul`
+**Status:** 💤 Idle (M5a Bug Fixes Complete)
+**Current Branch:** `feature/frontend-admin`
 
-## ✅ Decisions from Planner (DO NOT ASK AGAIN)
-1. **CV PDF:** Use `#` as a placeholder link for now. Owner will provide the file later.
-2. **Footer Icons:** Use **raw SVGs** for GitHub and LinkedIn. Do NOT install `react-icons`.
+## QA Feedback / Bugs (Assigned to Frontend)
+- No active bugs.
 
-## Phase 1 Tasks — START IMMEDIATELY (No Backend dependency)
+## Completed Work (M5a)
 
-### Hero Section
-- [ ] Change title to "Computer Engineer & AI Automation Developer"
-- [ ] Update subtitle to match owner's tagline from `docs/knowledge/owner-profile.md`
-- [ ] Add "Download CV" button (link to `#` as placeholder)
+### Phase 1 — Dynamic Hero & Footer
+- [x] Hero fetches `site_settings` (headline, subtitle, cv_url) with graceful fallback
+- [x] Footer fetches `social_links` (ordered, visible-only) with icon rendering by `icon_name`
+- [x] Footer text reads from `site_settings.footer_text`
 
-### About Section → Career Timeline (NEW COMPONENT)
-- [ ] Replace current About text and skill pills with a 3-phase timeline component
-- [ ] Phases: Foundation (2021–2023), Building (2023–2024), Expansion (2025–Present)
-- [ ] Reference `docs/knowledge/owner-profile.md` for exact descriptions
+### Phase 2 — Admin Panel
+- [x] `/admin/login` — Email/password auth via Supabase
+- [x] `/admin` — Protected dashboard with stats
+- [x] `/admin/settings` — Site settings form with profile image & CV upload
+- [x] `/admin/projects` — Full CRUD with image upload, category select, featured toggle
+- [x] `/admin/social` — CRUD with icon picker, display order, visibility toggle
+- [x] `/admin/messages` — Table with expandable rows, read/unread toggle, delete
 
-### Core Competencies Section (NEW COMPONENT)
-- [ ] Create new section with 4 capability cards (NOT generic skill badges)
-- [ ] Cards: Hardware-Software Integration, AI & Automation, Full-Stack Web, IoT Monitoring
-- [ ] Each card has an icon, title, and 1-line description
+### Infra
+- [x] `ConditionalNavbar` — hides public navbar on `/admin` routes
+- [x] `supabase-auth.ts` — browser client with persistent auth sessions
+- [x] `suppressHydrationWarning` on `<html>` tag (fixes ISS-004)
+- [x] Shared `admin-pages.module.css` design system
 
-### Footer Fixes
-- [ ] Update GitHub link → https://github.com/Ransky3000
-- [ ] Update LinkedIn link → https://www.linkedin.com/in/ranianrulona
-- [ ] Use raw SVG icons for GitHub and LinkedIn (NOT react-icons)
-- [ ] Delete `frontend/src/app/page.module.css`
-
-## Phase 2 Tasks — ✅ UNBLOCKED (Backend schema update is COMPLETE)
-- [ ] Update Project cards to display `problem` and `solution` fields from database
-- [ ] Ensure category filtering works with new categories
-- [ ] Read updated `docs/knowledge/api-contracts.md` for the new schema
-
-## Required Reading Before Starting
-1. `docs/knowledge/owner-profile.md` — Owner identity, competencies, timeline, projects
-2. `docs/knowledge/api-contracts.md` — **UPDATED** database schema with problem/solution columns
-3. `.github/CONTRIBUTING.md` — Git workflow rules
+## Active Blockers
+- None.
