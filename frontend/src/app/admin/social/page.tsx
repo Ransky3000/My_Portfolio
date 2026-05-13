@@ -2,7 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase-auth';
-import { Plus, Pencil, Trash2, Save, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import styles from '@/styles/admin-pages.module.css';
 
 interface SocialLink {
@@ -24,6 +41,64 @@ const EMPTY_LINK: Omit<SocialLink, 'id'> = {
 
 const ICON_OPTIONS = ['github', 'linkedin', 'upwork', 'email', 'twitter', 'youtube'];
 
+// ─── Sortable Row Component ───
+function SortableRow({
+  link,
+  onEdit,
+  onDelete,
+  onVisibilityChange,
+}: {
+  link: SocialLink;
+  onEdit: (l: SocialLink) => void;
+  onDelete: (l: SocialLink) => void;
+  onVisibilityChange: (l: SocialLink, visible: boolean) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: link.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr ref={setNodeRef} style={style}>
+      <td>
+        <span className={styles.dragHandle} {...attributes} {...listeners}>
+          <GripVertical size={16} />
+        </span>
+      </td>
+      <td>{link.platform}</td>
+      <td className={styles.truncate}>{link.url}</td>
+      <td>{link.icon_name || '—'}</td>
+      <td>
+        <select
+          className={styles.visibilitySelect}
+          value={link.visible ? 'visible' : 'hidden'}
+          onChange={(e) => onVisibilityChange(link, e.target.value === 'visible')}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <option value="visible">Visible</option>
+          <option value="hidden">Hidden</option>
+        </select>
+      </td>
+      <td>
+        <div className={styles.actions}>
+          <button className={styles.btnSecondary} onClick={() => onEdit(link)}><Pencil size={14} /></button>
+          <button className={styles.btnDanger} onClick={() => onDelete(link)}><Trash2 size={14} /></button>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function AdminSocialLinks() {
   const [links, setLinks] = useState<SocialLink[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +106,11 @@ export default function AdminSocialLinks() {
   const [deleteTarget, setDeleteTarget] = useState<SocialLink | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   useEffect(() => {
     fetchLinks();
@@ -50,6 +130,47 @@ export default function AdminSocialLinks() {
 
     if (!error && data) setLinks(data as SocialLink[]);
     setLoading(false);
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = links.findIndex((l) => l.id === active.id);
+    const newIndex = links.findIndex((l) => l.id === over.id);
+    const reordered = arrayMove(links, oldIndex, newIndex);
+
+    setLinks(reordered);
+
+    const updates = reordered.map((l, i) => ({
+      id: l.id,
+      display_order: i,
+    }));
+
+    for (const u of updates) {
+      await supabaseBrowser
+        .from('social_links')
+        .update({ display_order: u.display_order })
+        .eq('id', u.id);
+    }
+
+    setMessage({ type: 'success', text: 'Order updated!' });
+  }
+
+  async function handleVisibilityChange(link: SocialLink, visible: boolean) {
+    setLinks(prev => prev.map(l => l.id === link.id ? { ...l, visible } : l));
+
+    const { error } = await supabaseBrowser
+      .from('social_links')
+      .update({ visible })
+      .eq('id', link.id);
+
+    if (error) {
+      setMessage({ type: 'error', text: error.message });
+      fetchLinks();
+    } else {
+      setMessage({ type: 'success', text: `${link.platform} set to ${visible ? 'visible' : 'hidden'}.` });
+    }
   }
 
   async function handleSave() {
@@ -124,13 +245,11 @@ export default function AdminSocialLinks() {
           </div>
 
           <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Display Order</label>
-            <input type="number" className={styles.fieldInput} value={editing.display_order} onChange={(e) => setEditing({ ...editing, display_order: parseInt(e.target.value) || 0 })} />
-          </div>
-
-          <div className={styles.toggleGroup}>
-            <button type="button" className={`${styles.toggle} ${editing.visible ? styles.active : ''}`} onClick={() => setEditing({ ...editing, visible: !editing.visible })} />
-            <span className={styles.toggleLabel}>Visible on site</span>
+            <label className={styles.fieldLabel}>Visibility</label>
+            <select className={styles.fieldSelect} value={editing.visible ? 'visible' : 'hidden'} onChange={(e) => setEditing({ ...editing, visible: e.target.value === 'visible' })}>
+              <option value="visible">Visible</option>
+              <option value="hidden">Hidden</option>
+            </select>
           </div>
 
           <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
@@ -152,39 +271,33 @@ export default function AdminSocialLinks() {
 
       {message && <div className={message.type === 'success' ? styles.success : styles.error}>{message.text}</div>}
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Order</th>
-            <th>Platform</th>
-            <th>URL</th>
-            <th>Icon</th>
-            <th>Visible</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {links.map(link => (
-            <tr key={link.id}>
-              <td>{link.display_order}</td>
-              <td>{link.platform}</td>
-              <td className={styles.truncate}>{link.url}</td>
-              <td>{link.icon_name || '—'}</td>
-              <td>
-                <span className={`${styles.badge} ${link.visible ? styles.badgeGreen : styles.badgeGray}`}>
-                  {link.visible ? 'Yes' : 'No'}
-                </span>
-              </td>
-              <td>
-                <div className={styles.actions}>
-                  <button className={styles.btnSecondary} onClick={() => { setEditing({ ...link }); setMessage(null); }}><Pencil size={14} /></button>
-                  <button className={styles.btnDanger} onClick={() => setDeleteTarget(link)}><Trash2 size={14} /></button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={links.map(l => l.id)} strategy={verticalListSortingStrategy}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th style={{ width: '40px' }}></th>
+                <th>Platform</th>
+                <th>URL</th>
+                <th>Icon</th>
+                <th>Visible</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {links.map(link => (
+                <SortableRow
+                  key={link.id}
+                  link={link}
+                  onEdit={(l) => { setEditing({ ...l }); setMessage(null); }}
+                  onDelete={setDeleteTarget}
+                  onVisibilityChange={handleVisibilityChange}
+                />
+              ))}
+            </tbody>
+          </table>
+        </SortableContext>
+      </DndContext>
 
       {deleteTarget && (
         <div className={styles.modalOverlay} onClick={() => setDeleteTarget(null)}>

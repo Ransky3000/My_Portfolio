@@ -22,6 +22,13 @@
   1. **Admin edit form:** Replace the hardcoded `<select>` with a combo-box approach — a text `<input>` with a `<datalist>` populated from `SELECT DISTINCT category FROM projects`. This lets the user pick an existing category OR type a brand new one.
   2. **Public site filter buttons (`Projects.tsx`):** Replace the hardcoded `categories` array with a dynamic query: fetch distinct categories from Supabase and render filter buttons from the result. Always include "All" as the first option.
 
+**Feature: Social Links — Same UX as Projects table**
+- **Issue:** The `/admin/social` table still uses manual ORDER numbers and a Yes/No VISIBLE toggle. It should match the Projects table UX.
+- **Fix Required:**
+  1. **Drag-and-drop reordering:** Same as Projects — use `@dnd-kit` (already installed). Replace the ORDER column with a GripVertical drag handle. On drag-end, persist new `display_order` values to Supabase.
+  2. **Visibility dropdown:** Replace the Yes/No badge with a `<select>` dropdown with two options: `Visible` (maps to `visible = true`) and `Hidden` (maps to `visible = false`). Auto-save on change. Use the same dark-themed styling as the Projects visibility dropdown.
+  3. **Remove the ORDER column** from the table header and rows.
+
 ## M5a.1 Tasks
 
 ### Task 1: Drag-and-Drop Project Reordering ✅ DONE
