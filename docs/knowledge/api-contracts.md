@@ -17,8 +17,10 @@ Fetched directly via Supabase client by Frontend (`Projects.tsx`).
 | `image_url` | `text` (nullable) | Path to image (e.g., `/images/isrc.png`) |
 | `live_url` | `text` (nullable) | External link |
 | `github_url` | `text` (nullable) | Source code link |
-| `featured` | `boolean` | If true, highlight on UI |
+| `visibility` | `text` | Project visibility (`hidden`, `visible`, `featured`) |
 | `display_order` | `integer` | Ascending sort order |
+| `gallery_urls` | `text[]` | Array of image URLs for project gallery carousel |
+| `stats` | `jsonb` | Array of custom stat objects (e.g., `[{"label": "Users", "value": "10k"}]`) |
 
 ## 2. API Route: `POST /api/contact`
 Handled internally by Next.js Route Handler, saves to `public.contact_submissions`.
