@@ -35,6 +35,8 @@ interface Project {
   live_url: string | null;
   visibility: 'hidden' | 'visible' | 'featured';
   display_order: number;
+  gallery_urls?: string[];
+  stats?: { label: string; value: string }[];
 }
 
 const EMPTY_PROJECT: Omit<Project, 'id'> = {
@@ -49,6 +51,8 @@ const EMPTY_PROJECT: Omit<Project, 'id'> = {
   live_url: null,
   visibility: 'visible',
   display_order: 0,
+  gallery_urls: [],
+  stats: [],
 };
 
 const VISIBILITY_OPTIONS: { value: Project['visibility']; label: string; badge: string }[] = [
@@ -213,6 +217,63 @@ export default function AdminProjects() {
     setEditing({ ...editing, image_url: publicUrl });
   }
 
+  async function handleGalleryUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || !editing) return;
+    
+    setSaving(true);
+    setMessage(null);
+    const newUrls: string[] = [];
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const fileExt = file.name.split('.').pop();
+      const filePath = `projects/gallery_${Date.now()}_${i}.${fileExt}`;
+      
+      const { error } = await supabaseBrowser.storage
+        .from('portfolio-images')
+        .upload(filePath, file, { upsert: true });
+        
+      if (!error) {
+        const { data: { publicUrl } } = supabaseBrowser.storage
+          .from('portfolio-images')
+          .getPublicUrl(filePath);
+        newUrls.push(publicUrl);
+      } else {
+        setMessage({ type: 'error', text: `Upload failed for ${file.name}: ${error.message}` });
+      }
+    }
+    
+    setEditing({ ...editing, gallery_urls: [...(editing.gallery_urls || []), ...newUrls] });
+    setSaving(false);
+  }
+
+  function removeGalleryImage(index: number) {
+    if (!editing) return;
+    const newUrls = [...(editing.gallery_urls || [])];
+    newUrls.splice(index, 1);
+    setEditing({ ...editing, gallery_urls: newUrls });
+  }
+
+  function addStat() {
+    if (!editing) return;
+    setEditing({ ...editing, stats: [...(editing.stats || []), { label: '', value: '' }] });
+  }
+
+  function updateStat(index: number, field: 'label' | 'value', val: string) {
+    if (!editing) return;
+    const newStats = [...(editing.stats || [])];
+    newStats[index] = { ...newStats[index], [field]: val };
+    setEditing({ ...editing, stats: newStats });
+  }
+
+  function removeStat(index: number) {
+    if (!editing) return;
+    const newStats = [...(editing.stats || [])];
+    newStats.splice(index, 1);
+    setEditing({ ...editing, stats: newStats });
+  }
+
   async function handleSave() {
     if (!editing) return;
     setSaving(true);
@@ -338,6 +399,40 @@ export default function AdminProjects() {
                 <input type="file" accept="image/*" onChange={handleImageUpload} hidden />
               </label>
             </div>
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <label className={styles.fieldLabel}>Gallery Images</label>
+            <div className={styles.galleryPreview}>
+              {(editing.gallery_urls || []).map((url, idx) => (
+                <div key={idx} className={styles.galleryItem}>
+                  <img src={url} alt={`Gallery ${idx}`} className={styles.galleryThumb} />
+                  <button type="button" className={styles.btnRemoveImg} onClick={() => removeGalleryImage(idx)}>
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <label className={styles.btnSecondary} style={{ cursor: 'pointer', display: 'inline-flex', marginTop: '0.5rem' }}>
+              <Upload size={16} /> Upload Gallery Images
+              <input type="file" accept="image/*" multiple onChange={handleGalleryUpload} hidden />
+            </label>
+          </div>
+
+          <div className={styles.fieldGroup}>
+            <label className={styles.fieldLabel}>Key Stats</label>
+            {(editing.stats || []).map((stat, idx) => (
+              <div key={idx} className={styles.statRow}>
+                <input className={styles.fieldInput} placeholder="Label (e.g. Users)" value={stat.label} onChange={(e) => updateStat(idx, 'label', e.target.value)} />
+                <input className={styles.fieldInput} placeholder="Value (e.g. 10k+)" value={stat.value} onChange={(e) => updateStat(idx, 'value', e.target.value)} />
+                <button type="button" className={styles.btnDanger} onClick={() => removeStat(idx)}>
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+            <button type="button" className={styles.btnSecondary} onClick={addStat} style={{ marginTop: '0.5rem', display: 'inline-flex' }}>
+              <Plus size={16} /> Add Stat
+            </button>
           </div>
 
           <div className={styles.fieldGroup}>

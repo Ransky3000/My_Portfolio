@@ -4,18 +4,18 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** 🔄 Active (M5b — Rich Project Experience)
+**Status:** 💤 Idle — M5b Tasks Complete
 **Current Branch:** `main`
 
 ## M5b Tasks
 
-### Task 1: Admin Form Upgrades (WAIT for Backend Migration)
-- **Dependency:** Wait for the Backend Agent to add `gallery_urls` and `stats` to the `projects` table.
+### Task 1: Admin Form Upgrades ✅ DONE
+- **The Backend has confirmed the migration is done.** Both `gallery_urls` and `stats` exist in the `projects` table.
 - **File:** `/admin/projects/page.tsx`
 - **What:** 
-  1. Update `Project` interface to include `gallery_urls: string[]` and `stats: { label: string; value: string }[]`.
-  2. Add an image upload section for `gallery_urls` (multiple image uploads). Show thumbnails of uploaded images with an 'X' to remove them.
-  3. Add a dynamic input section for `stats` where the user can add/remove Key-Value pairs (e.g. Label: "Users", Value: "10k+").
+  1. Updated `Project` interface to include `gallery_urls: string[]` and `stats: { label: string; value: string }[]`.
+  2. Added an image upload section for `gallery_urls` (multiple image uploads). Show thumbnails of uploaded images with an 'X' to remove them.
+  3. Added a dynamic input section for `stats` where the user can add/remove Key-Value pairs (e.g. Label: "Users", Value: "10k+").
 
 ### Task 2: Simplify ProjectCard ✅ DONE
 - **File:** `frontend/src/components/ProjectCard.tsx`
