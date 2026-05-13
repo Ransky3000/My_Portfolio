@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { supabaseBrowser } from '@/lib/supabase-auth';
-import { Trash2, Eye, EyeOff } from 'lucide-react';
+import { Trash2, Eye, EyeOff, Search, ArrowUpDown } from 'lucide-react';
 import styles from '@/styles/admin-pages.module.css';
 
 interface ContactSubmission {
@@ -14,12 +14,19 @@ interface ContactSubmission {
   created_at: string;
 }
 
+type StatusFilter = 'all' | 'new' | 'read';
+
 export default function AdminMessages() {
   const [messages, setMessages] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ContactSubmission | null>(null);
   const [alertMsg, setAlertMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Filter & Sort state
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortNewestFirst, setSortNewestFirst] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchMessages();
@@ -40,6 +47,33 @@ export default function AdminMessages() {
     if (!error && data) setMessages(data as ContactSubmission[]);
     setLoading(false);
   }
+
+  // Derived filtered + sorted + searched messages
+  const filteredMessages = useMemo(() => {
+    let result = [...messages];
+
+    // Status filter
+    if (statusFilter === 'new') result = result.filter(m => !m.read);
+    if (statusFilter === 'read') result = result.filter(m => m.read);
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(m =>
+        m.name.toLowerCase().includes(q) ||
+        m.email.toLowerCase().includes(q) ||
+        m.message.toLowerCase().includes(q)
+      );
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      const diff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return sortNewestFirst ? diff : -diff;
+    });
+
+    return result;
+  }, [messages, statusFilter, sortNewestFirst, searchQuery]);
 
   async function toggleRead(msg: ContactSubmission) {
     const { error } = await supabaseBrowser
@@ -80,6 +114,8 @@ export default function AdminMessages() {
     });
   }
 
+  const newCount = messages.filter(m => !m.read).length;
+
   if (loading) return <div className={styles.pageTitle}>Loading...</div>;
 
   return (
@@ -87,6 +123,46 @@ export default function AdminMessages() {
       <h1 className={styles.pageTitle}>Messages ({messages.length})</h1>
 
       {alertMsg && <div className={alertMsg.type === 'success' ? styles.success : styles.error}>{alertMsg.text}</div>}
+
+      {/* ─── Filter Bar ─── */}
+      <div className={styles.filterBar}>
+        <div className={styles.filterButtons}>
+          {([
+            { key: 'all' as StatusFilter, label: `All (${messages.length})` },
+            { key: 'new' as StatusFilter, label: `New (${newCount})` },
+            { key: 'read' as StatusFilter, label: `Read (${messages.length - newCount})` },
+          ]).map(f => (
+            <button
+              key={f.key}
+              className={`${styles.filterBtn} ${statusFilter === f.key ? styles.filterBtnActive : ''}`}
+              onClick={() => setStatusFilter(f.key)}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+
+        <div className={styles.filterControls}>
+          <div className={styles.searchBox}>
+            <Search size={14} />
+            <input
+              type="text"
+              placeholder="Search name, email, or message..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <button
+            className={styles.sortBtn}
+            onClick={() => setSortNewestFirst(!sortNewestFirst)}
+            title={sortNewestFirst ? 'Showing newest first' : 'Showing oldest first'}
+          >
+            <ArrowUpDown size={14} />
+            {sortNewestFirst ? 'Newest' : 'Oldest'}
+          </button>
+        </div>
+      </div>
 
       <table className={styles.table}>
         <thead>
@@ -100,7 +176,7 @@ export default function AdminMessages() {
           </tr>
         </thead>
         <tbody>
-          {messages.map((msg) => (
+          {filteredMessages.map((msg) => (
             <>
               <tr
                 key={msg.id}
@@ -144,9 +220,9 @@ export default function AdminMessages() {
         </tbody>
       </table>
 
-      {messages.length === 0 && (
+      {filteredMessages.length === 0 && (
         <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem' }}>
-          No messages yet.
+          {searchQuery || statusFilter !== 'all' ? 'No messages match your filters.' : 'No messages yet.'}
         </div>
       )}
 

@@ -4,8 +4,17 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** 💤 Idle — All M5a.1 tasks and QA items complete.
+**Status:** 💤 Idle — All tasks and QA items complete.
 **Current Branch:** `main`
+
+## QA Feedback
+
+**Feature: Messages Filter & Sort**
+- **Status:** ✅ DONE
+- Added filter bar with status buttons (All/New/Read) with counts.
+- Added search box filtering by name, email, or message content.
+- Added date sort toggle (Newest/Oldest) with ArrowUpDown icon.
+- All filtering is client-side via `useMemo` for instant responsiveness.
 
 ## QA Feedback
 
