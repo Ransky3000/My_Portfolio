@@ -476,6 +476,7 @@
 .filePreview {
   width: 80px;
   height: 80px;
+  flex-shrink: 0;
   border-radius: var(--radius-sm);
   object-fit: cover;
   border: var(--glass-border);
@@ -492,6 +493,7 @@
   position: relative;
   width: 80px;
   height: 80px;
+  flex-shrink: 0;
 }
 
 .galleryThumb {

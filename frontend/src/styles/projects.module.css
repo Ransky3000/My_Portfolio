@@ -165,12 +165,12 @@
   border: var(--glass-border);
   border-radius: var(--radius-lg);
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   max-height: 90vh;
-  overflow-y: auto;
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
@@ -198,8 +198,8 @@
 }
 
 .modalCarousel {
-  width: 100%;
-  height: 400px;
+  flex: 1 1 50%;
+  min-height: 500px;
   position: relative;
   background: #000;
   display: flex;
@@ -238,7 +238,11 @@
 }
 
 .modalBody {
+  flex: 1 1 50%;
   padding: 2.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalHeader {
@@ -351,10 +355,18 @@
 }
 
 @media (max-width: 768px) {
+  .modalContent {
+    flex-direction: column;
+    overflow-y: auto;
+  }
   .modalCarousel {
-    height: 250px;
+    flex: none;
+    height: 300px;
+    min-height: auto;
   }
   .modalBody {
+    flex: none;
+    overflow-y: visible;
     padding: 1.5rem;
   }
   .modalTitle {
