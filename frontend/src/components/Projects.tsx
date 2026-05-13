@@ -26,6 +26,7 @@ export default function Projects() {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
+        .neq('visibility', 'hidden')
         .order('display_order', { ascending: true });
         
       if (error) {

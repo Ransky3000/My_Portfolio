@@ -4,7 +4,7 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** 💤 Idle (M5a.1 — Tasks 1, 2, 4 Done)
+**Status:** ✅ Complete (M5a.1 — All Tasks Done)
 **Current Branch:** `main`
 
 ## M5a.1 Tasks
@@ -18,8 +18,11 @@
 - Added `useEffect` with 3s `setTimeout` to all 4 admin pages (projects, settings, social, messages).
 - Added CSS `fadeInOut` animation for a smooth slide-in/fade-out transition.
 
-### Task 3: Visibility Dropdown (⏳ WAITING for Backend migration)
-- Blocked on Backend migrating `featured` (boolean) → `visibility` (text).
+### Task 3: Visibility Dropdown ✅ DONE
+- Replaced `featured: boolean` with `visibility: 'hidden' | 'visible' | 'featured'` in admin and public interfaces.
+- Admin projects table now shows an inline `<select>` dropdown with auto-save on change.
+- Public `Projects.tsx` filters hidden projects via `.neq('visibility', 'hidden')`.
+- Added `.badgeBlue` and `.visibilitySelect` CSS classes.
 
 ### Task 4: Site Title Caching Fix ✅ DONE (previous hotfix)
 - Moved `site_title` fetch from Server Component to Client Component.
@@ -31,4 +34,4 @@
 - [x] Next.js image config fixes
 
 ## Active Blockers
-- Task 3 blocked on Backend migration (featured → visibility).
+- None.

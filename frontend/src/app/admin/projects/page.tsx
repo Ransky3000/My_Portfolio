@@ -33,7 +33,7 @@ interface Project {
   image_url: string | null;
   github_url: string | null;
   live_url: string | null;
-  featured: boolean;
+  visibility: 'hidden' | 'visible' | 'featured';
   display_order: number;
 }
 
@@ -47,9 +47,15 @@ const EMPTY_PROJECT: Omit<Project, 'id'> = {
   image_url: null,
   github_url: null,
   live_url: null,
-  featured: false,
+  visibility: 'visible',
   display_order: 0,
 };
+
+const VISIBILITY_OPTIONS: { value: Project['visibility']; label: string; badge: string }[] = [
+  { value: 'hidden', label: 'Hidden', badge: 'badgeGray' },
+  { value: 'visible', label: 'Visible', badge: 'badgeBlue' },
+  { value: 'featured', label: 'Featured', badge: 'badgeGreen' },
+];
 
 const CATEGORIES = ['iot', 'automation', 'web', 'research', 'open-source', 'embedded'];
 
@@ -58,10 +64,12 @@ function SortableRow({
   project,
   onEdit,
   onDelete,
+  onVisibilityChange,
 }: {
   project: Project;
   onEdit: (p: Project) => void;
   onDelete: (p: Project) => void;
+  onVisibilityChange: (p: Project, v: Project['visibility']) => void;
 }) {
   const {
     attributes,
@@ -88,9 +96,16 @@ function SortableRow({
       <td>{project.title}</td>
       <td>{project.category}</td>
       <td>
-        <span className={`${styles.badge} ${project.featured ? styles.badgeGreen : styles.badgeGray}`}>
-          {project.featured ? 'Yes' : 'No'}
-        </span>
+        <select
+          className={styles.visibilitySelect}
+          value={project.visibility}
+          onChange={(e) => onVisibilityChange(project, e.target.value as Project['visibility'])}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {VISIBILITY_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
       </td>
       <td>
         <div className={styles.actions}>
@@ -236,6 +251,23 @@ export default function AdminProjects() {
     setDeleteTarget(null);
   }
 
+  async function handleVisibilityChange(project: Project, visibility: Project['visibility']) {
+    // Optimistically update local state
+    setProjects(prev => prev.map(p => p.id === project.id ? { ...p, visibility } : p));
+
+    const { error } = await supabaseBrowser
+      .from('projects')
+      .update({ visibility })
+      .eq('id', project.id);
+
+    if (error) {
+      setMessage({ type: 'error', text: error.message });
+      fetchProjects(); // revert on error
+    } else {
+      setMessage({ type: 'success', text: `Visibility set to "${visibility}".` });
+    }
+  }
+
   if (loading) return <div className={styles.pageTitle}>Loading...</div>;
 
   // ─── Editing Form ───
@@ -309,9 +341,13 @@ export default function AdminProjects() {
             <input className={styles.fieldInput} value={editing.live_url ?? ''} onChange={(e) => setEditing({ ...editing, live_url: e.target.value || null })} />
           </div>
 
-          <div className={styles.toggleGroup}>
-            <button type="button" className={`${styles.toggle} ${editing.featured ? styles.active : ''}`} onClick={() => setEditing({ ...editing, featured: !editing.featured })} />
-            <span className={styles.toggleLabel}>Featured</span>
+          <div className={styles.fieldGroup}>
+            <label className={styles.fieldLabel}>Visibility</label>
+            <select className={styles.fieldSelect} value={editing.visibility} onChange={(e) => setEditing({ ...editing, visibility: e.target.value as Project['visibility'] })}>
+              {VISIBILITY_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
 
           <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
@@ -342,7 +378,7 @@ export default function AdminProjects() {
                 <th style={{ width: '40px' }}></th>
                 <th>Title</th>
                 <th>Category</th>
-                <th>Featured</th>
+                <th>Visibility</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -353,6 +389,7 @@ export default function AdminProjects() {
                   project={p}
                   onEdit={openEdit}
                   onDelete={setDeleteTarget}
+                  onVisibilityChange={handleVisibilityChange}
                 />
               ))}
             </tbody>
