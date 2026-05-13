@@ -25,6 +25,12 @@ export default function AdminMessages() {
     fetchMessages();
   }, []);
 
+  useEffect(() => {
+    if (!alertMsg) return;
+    const timer = setTimeout(() => setAlertMsg(null), 3000);
+    return () => clearTimeout(timer);
+  }, [alertMsg]);
+
   async function fetchMessages() {
     const { data, error } = await supabaseBrowser
       .from('contact_submissions')

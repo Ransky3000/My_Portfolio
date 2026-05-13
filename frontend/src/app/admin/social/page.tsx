@@ -36,6 +36,12 @@ export default function AdminSocialLinks() {
     fetchLinks();
   }, []);
 
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message]);
+
   async function fetchLinks() {
     const { data, error } = await supabaseBrowser
       .from('social_links')

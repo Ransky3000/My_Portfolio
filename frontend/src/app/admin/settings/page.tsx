@@ -47,6 +47,12 @@ export default function AdminSettings() {
     fetchSettings();
   }, []);
 
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message]);
+
   async function handleUpload(file: File, folder: string): Promise<string | null> {
     const fileExt = file.name.split('.').pop();
     const filePath = `${folder}/${Date.now()}.${fileExt}`;

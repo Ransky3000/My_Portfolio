@@ -2,7 +2,24 @@
 
 import { useEffect, useState } from 'react';
 import { supabaseBrowser } from '@/lib/supabase-auth';
-import { Plus, Pencil, Trash2, Save, X, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, Save, X, Upload, GripVertical } from 'lucide-react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import styles from '@/styles/admin-pages.module.css';
 
 interface Project {
@@ -36,6 +53,55 @@ const EMPTY_PROJECT: Omit<Project, 'id'> = {
 
 const CATEGORIES = ['iot', 'automation', 'web', 'research', 'open-source', 'embedded'];
 
+// ─── Sortable Row Component ───
+function SortableRow({
+  project,
+  onEdit,
+  onDelete,
+}: {
+  project: Project;
+  onEdit: (p: Project) => void;
+  onDelete: (p: Project) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: project.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr ref={setNodeRef} style={style}>
+      <td>
+        <span className={styles.dragHandle} {...attributes} {...listeners}>
+          <GripVertical size={16} />
+        </span>
+      </td>
+      <td>{project.title}</td>
+      <td>{project.category}</td>
+      <td>
+        <span className={`${styles.badge} ${project.featured ? styles.badgeGreen : styles.badgeGray}`}>
+          {project.featured ? 'Yes' : 'No'}
+        </span>
+      </td>
+      <td>
+        <div className={styles.actions}>
+          <button className={styles.btnSecondary} onClick={() => onEdit(project)}><Pencil size={14} /></button>
+          <button className={styles.btnDanger} onClick={() => onDelete(project)}><Trash2 size={14} /></button>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,9 +111,20 @@ export default function AdminProjects() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [saving, setSaving] = useState(false);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
   useEffect(() => {
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (!message) return;
+    const timer = setTimeout(() => setMessage(null), 3000);
+    return () => clearTimeout(timer);
+  }, [message]);
 
   async function fetchProjects() {
     const { data, error } = await supabaseBrowser
@@ -57,6 +134,33 @@ export default function AdminProjects() {
 
     if (!error && data) setProjects(data as Project[]);
     setLoading(false);
+  }
+
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = projects.findIndex((p) => p.id === active.id);
+    const newIndex = projects.findIndex((p) => p.id === over.id);
+    const reordered = arrayMove(projects, oldIndex, newIndex);
+
+    // Optimistically update local state
+    setProjects(reordered);
+
+    // Persist new display_order values to Supabase
+    const updates = reordered.map((p, i) => ({
+      id: p.id,
+      display_order: i,
+    }));
+
+    for (const u of updates) {
+      await supabaseBrowser
+        .from('projects')
+        .update({ display_order: u.display_order })
+        .eq('id', u.id);
+    }
+
+    setMessage({ type: 'success', text: 'Order updated!' });
   }
 
   function openAdd() {
@@ -210,11 +314,6 @@ export default function AdminProjects() {
             <span className={styles.toggleLabel}>Featured</span>
           </div>
 
-          <div className={styles.fieldGroup}>
-            <label className={styles.fieldLabel}>Display Order</label>
-            <input type="number" className={styles.fieldInput} value={editing.display_order} onChange={(e) => setEditing({ ...editing, display_order: parseInt(e.target.value) || 0 })} />
-          </div>
-
           <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
             <Save size={16} /> {saving ? 'Saving...' : 'Save Project'}
           </button>
@@ -223,7 +322,7 @@ export default function AdminProjects() {
     );
   }
 
-  // ─── List View ───
+  // ─── List View with Drag-and-Drop ───
   return (
     <div>
       <div className={styles.topBar}>
@@ -235,37 +334,31 @@ export default function AdminProjects() {
 
       {message && <div className={message.type === 'success' ? styles.success : styles.error}>{message.text}</div>}
 
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Order</th>
-            <th>Title</th>
-            <th>Category</th>
-            <th>Featured</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map(p => (
-            <tr key={p.id}>
-              <td>{p.display_order}</td>
-              <td>{p.title}</td>
-              <td>{p.category}</td>
-              <td>
-                <span className={`${styles.badge} ${p.featured ? styles.badgeGreen : styles.badgeGray}`}>
-                  {p.featured ? 'Yes' : 'No'}
-                </span>
-              </td>
-              <td>
-                <div className={styles.actions}>
-                  <button className={styles.btnSecondary} onClick={() => openEdit(p)}><Pencil size={14} /></button>
-                  <button className={styles.btnDanger} onClick={() => setDeleteTarget(p)}><Trash2 size={14} /></button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={projects.map(p => p.id)} strategy={verticalListSortingStrategy}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th style={{ width: '40px' }}></th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map(p => (
+                <SortableRow
+                  key={p.id}
+                  project={p}
+                  onEdit={openEdit}
+                  onDelete={setDeleteTarget}
+                />
+              ))}
+            </tbody>
+          </table>
+        </SortableContext>
+      </DndContext>
 
       {/* Delete Confirmation Modal */}
       {deleteTarget && (
