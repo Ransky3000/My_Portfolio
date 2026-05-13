@@ -4,30 +4,27 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** 🔄 Active (M5a.1 — Minor CSS Fix)
+**Status:** 💤 Idle — All M5a.1 tasks and QA items complete.
 **Current Branch:** `main`
 
 ## QA Feedback
 
 **Bug 6: Visibility dropdown has white background.**
-- **Status:** ✅ FIXED
+- **Status:** ✅ FIXED — Applied solid dark background (`#1e293b`) to `.visibilitySelect` and its `option` children.
 
 **Bug 7: Category dropdown has white background.**
-- **Issue:** The `<select>` dropdown for Category in the project edit form also has a white background, same as Bug 6.
-- **Fix Required:** Apply the same dark-theme styling to the `.fieldSelect` class in `admin-pages.module.css` (and its `option` children).
+- **Status:** ✅ FIXED — Applied same dark background to `.fieldSelect` and its `option` children in `admin-pages.module.css`.
 
 **Feature: Dynamic Categories (replace hardcoded list)**
-- **Issue:** The `CATEGORIES` array in `/admin/projects/page.tsx` is hardcoded: `['iot', 'automation', 'web', 'research', 'open-source', 'embedded']`. If the Director adds a new category (e.g., "machine-learning"), it won't appear as an option.
-- **Fix Required:**
-  1. **Admin edit form:** Replace the hardcoded `<select>` with a combo-box approach — a text `<input>` with a `<datalist>` populated from `SELECT DISTINCT category FROM projects`. This lets the user pick an existing category OR type a brand new one.
-  2. **Public site filter buttons (`Projects.tsx`):** Replace the hardcoded `categories` array with a dynamic query: fetch distinct categories from Supabase and render filter buttons from the result. Always include "All" as the first option.
+- **Status:** ✅ DONE
+- Admin edit form: replaced hardcoded `<select>` with `<input>` + `<datalist>` populated from existing project categories. Owner can pick or type a new one.
+- Public filter buttons (`Projects.tsx`): derived dynamically from project data via `new Set(projects.map(p => p.category))`.
 
 **Feature: Social Links — Same UX as Projects table**
-- **Issue:** The `/admin/social` table still uses manual ORDER numbers and a Yes/No VISIBLE toggle. It should match the Projects table UX.
-- **Fix Required:**
-  1. **Drag-and-drop reordering:** Same as Projects — use `@dnd-kit` (already installed). Replace the ORDER column with a GripVertical drag handle. On drag-end, persist new `display_order` values to Supabase.
-  2. **Visibility dropdown:** Replace the Yes/No badge with a `<select>` dropdown with two options: `Visible` (maps to `visible = true`) and `Hidden` (maps to `visible = false`). Auto-save on change. Use the same dark-themed styling as the Projects visibility dropdown.
-  3. **Remove the ORDER column** from the table header and rows.
+- **Status:** ✅ DONE
+- Drag-and-drop reordering via `@dnd-kit` with GripVertical handle and auto-save.
+- Visibility dropdown (Visible/Hidden) with auto-save on change, using same dark-themed `.visibilitySelect` styling.
+- Removed manual ORDER column and display_order field from edit form.
 
 ## M5a.1 Tasks
 
