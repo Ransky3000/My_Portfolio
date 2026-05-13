@@ -1,6 +1,6 @@
 # 📊 Project Status Board
 
-**Last Updated:** 2026-05-12 by Planner
+**Last Updated:** 2026-05-13 by DevOps
 
 ## Overall Progress
 | Milestone | Status |
@@ -10,18 +10,18 @@
 | M3: Portfolio Redesign (Identity Overhaul) | ✅ Complete |
 | M4: Deploy (Vercel + Tagging) | ✅ Complete |
 | **M5a: Admin Panel MVP** | ✅ Complete |
-| M5b: Rich Project Experience | ✅ Complete |
+| **M5b: Rich Project Experience** | ✅ Complete |
 | M6: Dynamic Sections CMS | 📋 Planned |
 
 ## 🎉 DEPLOYED
 - **Live URL:** https://ranianrulona.vercel.app
 - **GitHub:** https://github.com/Ransky3000/My_Portfolio
-- **Current Release:** `v0.3.1` *(Deploying v0.4.0)*
+- **Current Release:** `v0.4.0`
 
-## Current Sprint: M5b — Rich Project Experience
+## Current Sprint: M6 — Dynamic Sections CMS
 
-### Status: Awaiting QA & DevOps Merge
-Backend and Frontend tasks for M5b are 100% complete. The new Project Detail Modal, Image Carousel, and custom Stats are ready for testing.
+### Status: Planning
+M5b has been released to production as `v0.4.0`. Next milestone will allow the Director to modify page sections (About, Contact, etc.) directly from the Admin Panel.
 
 ## Agent Status
 | Agent | Current Task | Branch | Status |
