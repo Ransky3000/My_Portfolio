@@ -10,27 +10,27 @@
 | M3: Portfolio Redesign (Identity Overhaul) | ✅ Complete |
 | M4: Deploy (Vercel + Tagging) | ✅ Complete |
 | **M5a: Admin Panel MVP** | ✅ Complete |
-| M5b: Rich Project Experience | 📋 Planned |
+| M5b: Rich Project Experience | 🔄 Active |
 | M6: Dynamic Sections CMS | 📋 Planned |
 
 ## 🎉 DEPLOYED
 - **Live URL:** https://ranianrulona.vercel.app
 - **GitHub:** https://github.com/Ransky3000/My_Portfolio
-- **Current Release:** `v0.2.0` *(Deploying v0.3.0)*
+- **Current Release:** `v0.3.1` *(M5a.1 UX Hotfixes)*
 
-## Current Sprint: M5a — Admin Panel MVP
+## Current Sprint: M5b — Rich Project Experience
 
-### Status: Awaiting DevOps Merge
-Backend and Frontend tasks are 100% complete and passed QA.
+### Status: Active Development
+Director approved the M5b design plan. Building the Project Detail Modal, image carousels, and project stats.
 
 ## Agent Status
 | Agent | Current Task | Branch | Status |
 |:---|:---|:---|:---|
-| 🔧 Backend | M5a Complete | — | 💤 Idle |
-| 🎨 Frontend | M5a Complete | — | 💤 Idle |
-| ⚙️ DevOps | Merge + tag `v0.3.0` | `main` | 🔄 Active |
+| 🔧 Backend | M5b Schema Migration | `main` | 🔄 Active |
+| 🎨 Frontend | M5b UI Components | `main` | 🔄 Active |
+| ⚙️ DevOps | Standby | `main` | 💤 Idle |
 | 🔬 Researcher | Standby | — | 💤 Idle |
-| 📋 Planner | Final Review | — | 🔄 Active |
+| 📋 Planner | Monitoring M5b | — | 🔄 Active |
 
 ## Active Issues
 See `docs/issues/ISSUES.md`

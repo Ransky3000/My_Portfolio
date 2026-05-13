@@ -4,62 +4,38 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** 💤 Idle — All tasks and QA items complete.
+**Status:** 🔄 Active (M5b — Rich Project Experience)
 **Current Branch:** `main`
 
-## QA Feedback
+## M5b Tasks
 
-**Feature: Messages Filter & Sort**
-- **Status:** ✅ DONE
-- Added filter bar with status buttons (All/New/Read) with counts.
-- Added search box filtering by name, email, or message content.
-- Added date sort toggle (Newest/Oldest) with ArrowUpDown icon.
-- All filtering is client-side via `useMemo` for instant responsiveness.
+### Task 1: Admin Form Upgrades (WAIT for Backend Migration)
+- **Dependency:** Wait for the Backend Agent to add `gallery_urls` and `stats` to the `projects` table.
+- **File:** `/admin/projects/page.tsx`
+- **What:** 
+  1. Update `Project` interface to include `gallery_urls: string[]` and `stats: { label: string; value: string }[]`.
+  2. Add an image upload section for `gallery_urls` (multiple image uploads). Show thumbnails of uploaded images with an 'X' to remove them.
+  3. Add a dynamic input section for `stats` where the user can add/remove Key-Value pairs (e.g. Label: "Users", Value: "10k+").
 
-## QA Feedback
+### Task 2: Simplify ProjectCard ✅ DONE
+- **File:** `frontend/src/components/ProjectCard.tsx`
+- **What:** The card should act as a clean teaser. Remove the `problem`, `solution`, and link buttons. Keep only the thumbnail image, title, category badge, short `description` (truncated to ~100 chars), and tech stack.
+- **Interaction:** The entire card should be clickable to trigger the new `ProjectModal`.
 
-**Bug 6: Visibility dropdown has white background.**
-- **Status:** ✅ FIXED — Applied solid dark background (`#1e293b`) to `.visibilitySelect` and its `option` children.
+### Task 3: ProjectModal Component ✅ DONE
+- **File:** `frontend/src/components/ProjectModal.tsx` (NEW)
+- **What:** A glassmorphic overlay component that receives a `Project` and an `onClose` callback.
+- **Design Specs:**
+  - **Backdrop:** `backdrop-blur-md` and dark semi-transparent overlay. Close on backdrop click or `Esc` key.
+  - **Animation:** Use Framer Motion to scale up from center (e.g., `initial={{ opacity: 0, scale: 0.95 }}` -> `animate={{ opacity: 1, scale: 1 }}`) for a premium Apple-like feel.
+  - **Layout:**
+    - Top/Left: Image Carousel looping through `[image_url, ...gallery_urls]`. Provide left/right arrows.
+    - Title, Category, Tech Stack.
+    - Full `description`, `problem`, and `solution`.
+    - **Stats:** Render the `stats` array in a visually distinct grid/row.
+    - Prominent action buttons for Live Demo and Source Code.
+- **Integration:** Update `frontend/src/components/Projects.tsx` to hold state for the `selectedProject` and render the modal when active.
 
-**Bug 7: Category dropdown has white background.**
-- **Status:** ✅ FIXED — Applied same dark background to `.fieldSelect` and its `option` children in `admin-pages.module.css`.
-
-**Feature: Dynamic Categories (replace hardcoded list)**
-- **Status:** ✅ DONE
-- Admin edit form: replaced hardcoded `<select>` with `<input>` + `<datalist>` populated from existing project categories. Owner can pick or type a new one.
-- Public filter buttons (`Projects.tsx`): derived dynamically from project data via `new Set(projects.map(p => p.category))`.
-
-**Feature: Social Links — Same UX as Projects table**
-- **Status:** ✅ DONE
-- Drag-and-drop reordering via `@dnd-kit` with GripVertical handle and auto-save.
-- Visibility dropdown (Visible/Hidden) with auto-save on change, using same dark-themed `.visibilitySelect` styling.
-- Removed manual ORDER column and display_order field from edit form.
-
-## M5a.1 Tasks
-
-### Task 1: Drag-and-Drop Project Reordering ✅ DONE
-- Installed `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`.
-- Replaced manual "Order" column with a GripVertical drag handle.
-- On drag-end, optimistically reorders locally and persists `display_order` to Supabase.
-
-### Task 2: Auto-Dismiss Notification Bar ✅ DONE
-- Added `useEffect` with 3s `setTimeout` to all 4 admin pages (projects, settings, social, messages).
-- Added CSS `fadeInOut` animation for a smooth slide-in/fade-out transition.
-
-### Task 3: Visibility Dropdown ✅ DONE
-- Replaced `featured: boolean` with `visibility: 'hidden' | 'visible' | 'featured'` in admin and public interfaces.
-- Admin projects table now shows an inline `<select>` dropdown with auto-save on change.
-- Public `Projects.tsx` filters hidden projects via `.neq('visibility', 'hidden')`.
-- Added `.badgeBlue` and `.visibilitySelect` CSS classes.
-
-### Task 4: Site Title Caching Fix ✅ DONE (previous hotfix)
-- Moved `site_title` fetch from Server Component to Client Component.
-
-## Completed Work (M5a)
-- [x] Dynamic Hero & Footer
-- [x] Full Admin Panel CRUD
-- [x] Admin CMS link in Navbar
-- [x] Next.js image config fixes
-
-## Active Blockers
-- None.
+## Completed Work 
+- [x] M5a: Dynamic Hero & Footer, Admin Panel CRUD
+- [x] M5a.1: Admin UX Hotfixes (DND, Visibility Dropdown, Messages Filter)

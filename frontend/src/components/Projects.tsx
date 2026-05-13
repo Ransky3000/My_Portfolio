@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import ProjectCard, { Project } from './ProjectCard';
+import ProjectModal from './ProjectModal';
 import styles from '../styles/projects.module.css';
 
 const gridVariants = {
@@ -18,6 +19,7 @@ export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
     async function fetchProjects() {
@@ -80,11 +82,21 @@ export default function Projects() {
             {projects
               .filter(p => activeFilter === 'All' || p.category === activeFilter)
               .map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard 
+                  key={project.id} 
+                  project={project} 
+                  onClick={() => setSelectedProject(project)} 
+                />
             ))}
           </motion.div>
         </>
       )}
+
+      {/* Render the modal outside the main layout flow */}
+      <ProjectModal 
+        project={selectedProject} 
+        onClose={() => setSelectedProject(null)} 
+      />
     </section>
   );
 }
