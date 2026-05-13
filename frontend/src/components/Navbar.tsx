@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 import styles from '../styles/navbar.module.css';
 import LoginModal from './LoginModal';
 
-export default function Navbar({ initialSiteTitle = 'Ranian' }: { initialSiteTitle?: string }) {
+export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [siteTitle, setSiteTitle] = useState(initialSiteTitle);
+  const [siteTitle, setSiteTitle] = useState('Ranian');
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
@@ -18,6 +19,21 @@ export default function Navbar({ initialSiteTitle = 'Ranian' }: { initialSiteTit
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    async function fetchSiteTitle() {
+      const { data, error } = await supabase
+        .from('site_settings')
+        .select('site_title')
+        .limit(1)
+        .single();
+
+      if (!error && data?.site_title) {
+        setSiteTitle(data.site_title);
+      }
+    }
+    fetchSiteTitle();
   }, []);
 
   const toggleMobileMenu = () => setMobileOpen(!mobileOpen);

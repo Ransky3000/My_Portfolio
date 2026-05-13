@@ -4,8 +4,8 @@
 **Last Updated:** 2026-05-12
 
 ## Current State
-**Status:** 💤 Idle (M5a Final Polish Complete)
-**Current Branch:** `feature/frontend-admin`
+**Status:** 💤 Idle (Vercel Cache Bug Fixed)
+**Current Branch:** `main`
 
 ## QA Feedback / Bugs (Assigned to Frontend)
 - No active bugs.
