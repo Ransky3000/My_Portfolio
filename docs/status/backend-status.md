@@ -1,49 +1,40 @@
 # Backend Agent — Status
 
 **Role:** Server-side logic, Database schema, API routes, Supabase config.
-**Last Updated:** 2026-05-12
+**Last Updated:** 2026-05-13
 
 ## Current State
 **Status:** 💤 Idle
-**Git Branch:** `feature/backend-admin`
+**Git Branch:** `main` (Hotfix)
 **Supabase Project ID:** `hhmtviclhwwffoyktdgf`
 
-## QA Feedback / Bugs (Assigned to Backend)
+## M5a.1 Task: Schema Migration — `featured` → `visibility`
 
-**Bug 1 (CRITICAL): Authenticated users cannot SELECT from `projects` table.**
-- **Status:** ✅ FIXED
-- **Fix Applied:** Added `projects_auth_select` policy for authenticated SELECT.
-- **Audit Result:** All other tables (`site_settings`, `social_links`, `contact_submissions`) already had correct SELECT policies for their intended roles. No additional fixes needed.
+**Priority:** 🔴 Immediate — Frontend is waiting on this for the dropdown UI.
 
-## Completed Work (M5a)
+Replace the `featured` boolean column on the `projects` table with a `visibility` text column that supports 3 states: `hidden`, `visible`, `featured`.
 
-### Task 1: Database Schema
-- [x] Create `site_settings` table
-- [x] Create `social_links` table
+**Run this migration via `apply_migration`:**
+```sql
+-- Step 1: Add new visibility column
+ALTER TABLE projects ADD COLUMN visibility text NOT NULL DEFAULT 'visible';
 
-### Task 2: Supabase Auth Setup
-- [x] Email/Password auth provider enabled
-- [x] Owner account created via dashboard
-- [x] Documented in `docs/knowledge/api-contracts.md`
+-- Step 2: Migrate existing data
+UPDATE projects SET visibility = CASE WHEN featured = true THEN 'featured' ELSE 'visible' END;
 
-### Task 3: Supabase Storage Setup
-- [x] Created public storage bucket `portfolio-images`
-- [x] Set storage policies
-- [x] Documented
+-- Step 3: Drop old column
+ALTER TABLE projects DROP COLUMN featured;
 
-### Task 4: Row Level Security (RLS)
-- [x] `site_settings`: public SELECT, authenticated INSERT/UPDATE/DELETE
-- [x] `social_links`: public SELECT, authenticated INSERT/UPDATE/DELETE
-- [x] `projects`: public SELECT + authenticated SELECT/INSERT/UPDATE/DELETE ✅ FIXED
-- [x] `contact_submissions`: public INSERT, authenticated SELECT/UPDATE/DELETE
+-- Step 4: Add constraint
+ALTER TABLE projects ADD CONSTRAINT projects_visibility_check 
+  CHECK (visibility IN ('hidden', 'visible', 'featured'));
+```
 
-### Task 5: Seed Data
-- [x] Seeded `site_settings`
-- [x] Seeded `social_links`
-- [x] Updated `backend/supabase/seed.sql`
+**After completing:**
+1. Verify the migration worked: `SELECT id, title, visibility FROM projects;`
+2. Update this file: set Status to `💤 Idle` and mark the task as complete.
 
-### Task 6: Documentation
-- [x] Updated `docs/knowledge/api-contracts.md`
-
-## Active Blockers
-- None. Fix is straightforward.
+## Completed Work
+- [x] M5a: Tables, Auth, Storage, RLS
+- [x] Bug 1 Fix: Added `projects_auth_select` RLS policy
+- [x] M5a.1: Schema migration — replaced `featured` (boolean) with `visibility` (text: hidden/visible/featured)
