@@ -53,6 +53,12 @@
 
 .fieldSelect {
   cursor: pointer;
+  background: #1e293b;
+}
+
+.fieldSelect option {
+  background: #1e293b;
+  color: var(--text-primary);
 }
 
 .toggleGroup {

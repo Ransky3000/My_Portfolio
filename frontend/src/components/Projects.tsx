@@ -18,8 +18,6 @@ export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
-  
-  const categories = ['All', 'iot', 'automation', 'web', 'research', 'open-source'];
 
   useEffect(() => {
     async function fetchProjects() {
@@ -39,6 +37,9 @@ export default function Projects() {
     
     fetchProjects();
   }, []);
+
+  // Derive categories dynamically from project data
+  const categories = ['All', ...Array.from(new Set(projects.map(p => p.category)))];
 
   return (
     <section className={styles.section} id="projects">

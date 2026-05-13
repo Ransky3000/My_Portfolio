@@ -308,9 +308,18 @@ export default function AdminProjects() {
 
           <div className={styles.fieldGroup}>
             <label className={styles.fieldLabel}>Category</label>
-            <select className={styles.fieldSelect} value={editing.category} onChange={(e) => setEditing({ ...editing, category: e.target.value })}>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <input
+              className={styles.fieldInput}
+              list="category-suggestions"
+              value={editing.category}
+              onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+              placeholder="e.g. web, iot, automation"
+            />
+            <datalist id="category-suggestions">
+              {[...new Set(projects.map(p => p.category))].map(c => (
+                <option key={c} value={c} />
+              ))}
+            </datalist>
           </div>
 
           <div className={styles.fieldGroup}>

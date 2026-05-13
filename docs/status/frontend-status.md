@@ -10,8 +10,17 @@
 ## QA Feedback
 
 **Bug 6: Visibility dropdown has white background.**
-- **Issue:** The `<select>` dropdown for visibility on `/admin/projects` has a white background when opened, clashing with the dark admin theme.
-- **Fix Required:** Style the `<select>` element and its `<option>` elements with dark background and light text to match the admin theme. Update `admin-pages.module.css` — add `background-color`, `color`, and `border` styles to the `.visibilitySelect` class and its `option` children.
+- **Status:** ✅ FIXED
+
+**Bug 7: Category dropdown has white background.**
+- **Issue:** The `<select>` dropdown for Category in the project edit form also has a white background, same as Bug 6.
+- **Fix Required:** Apply the same dark-theme styling to the `.fieldSelect` class in `admin-pages.module.css` (and its `option` children).
+
+**Feature: Dynamic Categories (replace hardcoded list)**
+- **Issue:** The `CATEGORIES` array in `/admin/projects/page.tsx` is hardcoded: `['iot', 'automation', 'web', 'research', 'open-source', 'embedded']`. If the Director adds a new category (e.g., "machine-learning"), it won't appear as an option.
+- **Fix Required:**
+  1. **Admin edit form:** Replace the hardcoded `<select>` with a combo-box approach — a text `<input>` with a `<datalist>` populated from `SELECT DISTINCT category FROM projects`. This lets the user pick an existing category OR type a brand new one.
+  2. **Public site filter buttons (`Projects.tsx`):** Replace the hardcoded `categories` array with a dynamic query: fetch distinct categories from Supabase and render filter buttons from the result. Always include "All" as the first option.
 
 ## M5a.1 Tasks
 
