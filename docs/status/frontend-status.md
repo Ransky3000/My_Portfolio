@@ -4,8 +4,14 @@
 **Last Updated:** 2026-05-13
 
 ## Current State
-**Status:** ✅ Complete (M5a.1 — All Tasks Done)
+**Status:** 🔄 Active (M5a.1 — Minor CSS Fix)
 **Current Branch:** `main`
+
+## QA Feedback
+
+**Bug 6: Visibility dropdown has white background.**
+- **Issue:** The `<select>` dropdown for visibility on `/admin/projects` has a white background when opened, clashing with the dark admin theme.
+- **Fix Required:** Style the `<select>` element and its `<option>` elements with dark background and light text to match the admin theme. Update `admin-pages.module.css` — add `background-color`, `color`, and `border` styles to the `.visibilitySelect` class and its `option` children.
 
 ## M5a.1 Tasks
 
