@@ -24,8 +24,9 @@ export default function Navbar({ initialSiteTitle = 'Ranian' }: { initialSiteTit
   const closeMobileMenu = () => setMobileOpen(false);
 
   return (
-    <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`} id="navbar">
-      <div className={styles.container}>
+    <>
+      <nav className={`${styles.navbar} ${isScrolled ? styles.scrolled : ''}`} id="navbar">
+        <div className={styles.container}>
         <Link href="/" className={styles.logo}>
           {siteTitle}
         </Link>
@@ -49,8 +50,9 @@ export default function Navbar({ initialSiteTitle = 'Ranian' }: { initialSiteTit
           {mobileOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
+      </nav>
 
       {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
-    </nav>
+    </>
   );
 }
